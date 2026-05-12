@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataX UI Kit — Component Catalog</title>
+  <link rel="stylesheet" href="datax-ui.css">
+  <style>
+    .catalog-section {
+      margin-bottom: 56px;
+    }
+    .catalog-section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dx-text);
+      border-bottom: 2px solid var(--dx-color-primary);
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+    }
+    .catalog-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .catalog-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--dx-text-muted);
+      margin-bottom: 8px;
+    }
+    .catalog-code {
+      background: var(--dx-bg-secondary);
+      border: 1px solid var(--dx-border);
+      border-radius: var(--dx-radius);
+      padding: 12px 16px;
+      font-family: var(--dx-font-mono);
+      font-size: 12px;
+      color: var(--dx-text-secondary);
+      overflow-x: auto;
+      margin-top: 8px;
+    }
+    .catalog-demo {
+      background: var(--dx-bg-secondary);
+      border: 1px solid var(--dx-border);
+      border-radius: var(--dx-radius-lg);
+      padding: 24px;
+      margin-bottom: 12px;
+    }
+    .catalog-subsection {
+      margin-bottom: 28px;
+    }
+    .catalog-hero {
+      background: var(--dx-color-primary);
+      color: #fff;
+      padding: 48px 24px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .catalog-hero h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin: 0 0 8px;
+    }
+    .catalog-hero p {
+      font-size: 15px;
+      opacity: 0.85;
+      margin: 0;
+    }
+    .color-swatch {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--dx-radius);
+      border: 1px solid var(--dx-border);
+    }
+    .color-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--dx-text-secondary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header class="dx-header">
+    <a class="dx-header-brand" href="#">DataX UI Kit</a>
+    <nav class="dx-header-nav">
+      <span class="dx-badge dx-badge-blue">v1.0</span>
+      <button class="dx-btn dx-btn-ghost dx-btn-sm" data-dx-theme-toggle>🌙 テーマ</button>
+    </nav>
+  </header>
+
+  <!-- ヒーロー -->
+  <div class="catalog-hero">
+    <h1>DataX UI Kit</h1>
+    <p>DataXアプリで使用する共通コンポーネントカタログ &mdash; AIがこのファイルを読んでコンポーネントを活用します。</p>
+  </div>
+
+  <main class="dx-container" style="padding-bottom: 80px">
+
+    <!-- ============================================
+         1. デザイントークン（カラー）
+         ============================================ -->
+    <section class="catalog-section">
+      <h2 class="catalog-section-title">1. デザイントークン（カラー）</h2>
+      <p class="dx-text-muted dx-text-sm" style="margin-bottom: 20px">すべての色はCSS変数（<code>--dx-*</code>）で管理されます。ダーク/ライトモード自動対応。</p>
+
+      <div class="catalog-demo">
+        <div class="catalog-label">Primary Colors</div>
+        <div class="catalog-row">
+          <div class="color-item">
+            <div class="color-swatch" style="background:var(--dx-color-primary)"></div>
+            <span>primary</span>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background:var(--dx-color-success)"></div>
+            <span>success</span>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background:var(--dx-color-warning)"></div>
+            <span>warning</span>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background:var(--dx-color-danger)"></div>
+            <span>danger</span>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background:var(--dx-color-secondary)"></div>
+            <span>secondary</span>
+          </div>
+        </div>
+
+        <div class="catalog-label" style="margin-top:16px">Background / Text</div>
+        <div class="catalog-row">
+          <div class="color-item">
+            <div class="color-swatch" style="background:var(--dx-bg)"></div>
+            <span>bg</span>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background:var(--dx-bg-secondary)"></div>
+            <span>bg-secondary</span>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background:var(--dx-bg-tertiary)"></div>
+            <span>bg-tertiary</span>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background:var(--dx-text)"></div>
+            <span>text</span>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background:var(--dx-text-secondary)"></div>
+            <span>text-secondary</span>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background:var(--dx-text-muted)"></div>
+            <span>text-muted</span>
+          </div>
+          <div class="color-item">
+            <div class="color-swatch" style="background:var(--dx-border)"></div>
+            <span>border</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         2. ボタン
+         ============================================ -->
+    <section class="catalog-section">
+      <h2 class="catalog-section-title">2. ボタン（Button）</h2>
+
+      <div class="catalog-subsection">
+        <div class="catalog-label">Variants</div>
+        <div class="catalog-demo catalog-row">
+          <button class="dx-btn dx-btn-primary">プライマリ</button>
+          <button class="dx-btn dx-btn-secondary">セカンダリ</button>
+          <button class="dx-btn dx-btn-danger">削除</button>
+          <button class="dx-btn dx-btn-ghost">ゴースト</button>
+        </div>
+        <div class="catalog-code">&lt;button class="dx-btn dx-btn-primary"&gt;プライマリ&lt;/button&gt;
+&lt;button class="dx-btn dx-btn-secondary"&gt;セカンダリ&lt;/button&gt;
+&lt;button class="dx-btn dx-btn-danger"&gt;削除&lt;/button&gt;
+&lt;button class="dx-btn dx-btn-ghost"&gt;ゴースト&lt;/button&gt;</div>
+      </div>
+
+      <div class="catalog-subsection">
+        <div class="catalog-label">Sizes</div>
+        <div class="catalog-demo catalog-row" style="align-items:center">
+          <button class="dx-btn dx-btn-primary dx-btn-sm">小</button>
+          <button class="dx-btn dx-btn-primary">デフォルト</button>
+          <button class="dx-btn dx-btn-primary dx-btn-lg">大</button>
+        </div>
+        <div class="catalog-code">&lt;button class="dx-btn dx-btn-primary dx-btn-sm"&gt;小&lt;/button&gt;
+&lt;button class="dx-btn dx-btn-primary"&gt;デフォルト&lt;/button&gt;
+&lt;button class="dx-btn dx-btn-primary dx-btn-lg"&gt;大&lt;/button&gt;</div>
+      </div>
+
+      <div class="catalog-subsection">
+        <div class="catalog-label">States</div>
+        <div class="catalog-demo catalog-row">
+          <button class="dx-btn dx-btn-primary" disabled>無効</button>
+          <button class="dx-btn dx-btn-primary" disabled>
+            <span class="dx-spinner"></span> 処理中...
+          </button>
+        </div>
+        <div class="catalog-code">&lt;button class="dx-btn dx-btn-primary" disabled&gt;無効&lt;/button&gt;
+&lt;button class="dx-btn dx-btn-primary" disabled&gt;
+  &lt;span class="dx-spinner"&gt;&lt;/span&gt; 処理中...
+&lt;/button&gt;</div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         3. カード
+         ============================================ -->
+    <section class="catalog-section">
+      <h2 class="catalog-section-title">3. カード（Card）</h2>
+
+      <div class="catalog-demo" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px">
+        <!-- ヘッダー・フッターありカード -->
+        <div class="dx-card">
+          <div class="dx-card-header">
+            <h3 class="dx-card-title">カードタイトル</h3>
+            <button class="dx-btn dx-btn-ghost dx-btn-sm">編集</button>
+          </div>
+          <div class="dx-card-body">
+            カードの本文コンテンツです。テキスト、画像などのコンテンツを入れられます。
+          </div>
+          <div class="dx-card-footer">
+            <span class="dx-text-sm dx-text-muted">最終更新：2026-05-12</span>
+          </div>
+        </div>
+
+        <!-- シンプルカード -->
+        <div class="dx-card">
+          <div class="dx-card-body">
+            <p style="margin:0 0 12px">ヘッダー・フッターなしのシンプルカード。</p>
+            <button class="dx-btn dx-btn-primary dx-btn-sm">アクション</button>
+          </div>
+        </div>
+      </div>
+      <div class="catalog-code">&lt;div class="dx-card"&gt;
+  &lt;div class="dx-card-header"&gt;
+    &lt;h3 class="dx-card-title"&gt;カードタイトル&lt;/h3&gt;
+  &lt;/div&gt;
+  &lt;div class="dx-card-body"&gt;本文&lt;/div&gt;
+  &lt;div class="dx-card-footer"&gt;フッター&lt;/div&gt;
+&lt;/div&gt;</div>
+    </section>
+
+    <!-- ============================================
+         4. フォーム
+         ============================================ -->
+    <section class="catalog-section">
+      <h2 class="catalog-section-title">4. フォーム（Form）</h2>
+
+      <div class="catalog-demo" style="max-width:480px">
+        <div class="dx-form-group">
+          <label class="dx-label" for="demo-input">名前 <span style="color:var(--dx-color-danger)">*</span></label>
+          <input class="dx-input" id="demo-input" type="text" placeholder="入力してください">
+          <p class="dx-form-hint">半角英数字で入力してください。</p>
+        </div>
+
+        <div class="dx-form-group">
+          <label class="dx-label" for="demo-input-error">メール（エラー状態）</label>
+          <input class="dx-input dx-input-error" id="demo-input-error" type="email" value="不正な値">
+          <p class="dx-form-error">正しいメールアドレスを入力してください。</p>
+        </div>
+
+        <div class="dx-form-group">
+          <label class="dx-label" for="demo-select">カテゴリ</label>
+          <select class="dx-select" id="demo-select">
+            <option value="">選択してください</option>
+            <option value="a">カテゴリA</option>
+            <option value="b">カテゴリB</option>
+          </select>
+        </div>
+
+        <div class="dx-form-group">
+          <label class="dx-label" for="demo-textarea">メモ</label>
+          <textarea class="dx-textarea" id="demo-textarea" rows="3" placeholder="メモを入力してください"></textarea>
+        </div>
+
+        <button class="dx-btn dx-btn-primary dx-w-full">送信</button>
+      </div>
+      <div class="catalog-code">&lt;div class="dx-form-group"&gt;
+  &lt;label class="dx-label" for="name"&gt;名前&lt;/label&gt;
+  &lt;input class="dx-input" id="name" type="text" placeholder="入力してください"&gt;
+  &lt;p class="dx-form-hint"&gt;ヒントテキスト&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;!-- エラー状態 --&gt;
+&lt;input class="dx-input dx-input-error" ...&gt;
+&lt;p class="dx-form-error"&gt;エラーメッセージ&lt;/p&gt;
+
+&lt;select class="dx-select"&gt;...&lt;/select&gt;
+&lt;textarea class="dx-textarea"&gt;&lt;/textarea&gt;</div>
+    </section>
+
+    <!-- ============================================
+         5. テーブル
+         ============================================ -->
+    <section class="catalog-section">
+      <h2 class="catalog-section-title">5. テーブル（Table）</h2>
+
+      <div class="catalog-demo">
+        <div class="dx-table-wrap">
+          <table class="dx-table">
+            <thead>
+              <tr>
+                <th>アプリ名</th>
+                <th>ステータス</th>
+                <th>ランタイム</th>
+                <th>デプロイ日時</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>sales-dashboard</td>
+                <td><span class="dx-badge dx-badge-green">active</span></td>
+                <td>Python</td>
+                <td>2026-05-12 09:00</td>
+                <td>
+                  <div class="dx-flex dx-gap-2">
+                    <button class="dx-btn dx-btn-ghost dx-btn-sm">詳細</button>
+                    <button class="dx-btn dx-btn-danger dx-btn-sm">削除</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>risk-alert</td>
+                <td><span class="dx-badge dx-badge-yellow">deploying</span></td>
+                <td>Node.js</td>
+                <td>2026-05-12 10:30</td>
+                <td>
+                  <div class="dx-flex dx-gap-2">
+                    <button class="dx-btn dx-btn-ghost dx-btn-sm">詳細</button>
+                    <button class="dx-btn dx-btn-danger dx-btn-sm" disabled>削除</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>team-wiki</td>
+                <td><span class="dx-badge dx-badge-red">error</span></td>
+                <td>Static HTML</td>
+                <td>2026-05-11 18:00</td>
+                <td>
+                  <div class="dx-flex dx-gap-2">
+                    <button class="dx-btn dx-btn-ghost dx-btn-sm">詳細</button>
+                    <button class="dx-btn dx-btn-danger dx-btn-sm">削除</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="catalog-code">&lt;div class="dx-table-wrap"&gt;
+  &lt;table class="dx-table"&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th&gt;カラム&lt;/th&gt;...&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;&lt;tr&gt;&lt;td&gt;データ&lt;/td&gt;...&lt;/tr&gt;&lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;</div>
+    </section>
+
+    <!-- ============================================
+         6. バッジ
+         ============================================ -->
+    <section class="catalog-section">
+      <h2 class="catalog-section-title">6. バッジ（Badge）</h2>
+
+      <div class="catalog-demo catalog-row">
+        <span class="dx-badge dx-badge-blue">情報</span>
+        <span class="dx-badge dx-badge-green">成功 / active</span>
+        <span class="dx-badge dx-badge-yellow">警告 / deploying</span>
+        <span class="dx-badge dx-badge-red">エラー / error</span>
+        <span class="dx-badge dx-badge-gray">未設定</span>
+      </div>
+      <div class="catalog-code">&lt;span class="dx-badge dx-badge-blue"&gt;情報&lt;/span&gt;
+&lt;span class="dx-badge dx-badge-green"&gt;成功&lt;/span&gt;
+&lt;span class="dx-badge dx-badge-yellow"&gt;警告&lt;/span&gt;
+&lt;span class="dx-badge dx-badge-red"&gt;エラー&lt;/span&gt;
+&lt;span class="dx-badge dx-badge-gray"&gt;未設定&lt;/span&gt;</div>
+    </section>
+
+    <!-- ============================================
+         7. アラート
+         ============================================ -->
+    <section class="catalog-section">
+      <h2 class="catalog-section-title">7. アラート（Alert）</h2>
+
+      <div class="catalog-demo" style="display:flex;flex-direction:column;gap:10px">
+        <div class="dx-alert dx-alert-info">ℹ 情報メッセージです。</div>
+        <div class="dx-alert dx-alert-success">✓ 保存しました。</div>
+        <div class="dx-alert dx-alert-warning">⚠ 注意が必要です。</div>
+        <div class="dx-alert dx-alert-error">✕ エラーが発生しました。</div>
+      </div>
+      <div class="catalog-code">&lt;div class="dx-alert dx-alert-info"&gt;ℹ 情報メッセージ&lt;/div&gt;
+&lt;div class="dx-alert dx-alert-success"&gt;✓ 保存しました&lt;/div&gt;
+&lt;div class="dx-alert dx-alert-warning"&gt;⚠ 注意が必要です&lt;/div&gt;
+&lt;div class="dx-alert dx-alert-error"&gt;✕ エラーが発生しました&lt;/div&gt;</div>
+    </section>
+
+    <!-- ============================================
+         8. スピナー
+         ============================================ -->
+    <section class="catalog-section">
+      <h2 class="catalog-section-title">8. スピナー（Spinner）</h2>
+
+      <div class="catalog-demo catalog-row" style="align-items:center">
+        <span class="dx-spinner"></span>
+        <span class="dx-text-sm dx-text-muted">基本（16px）</span>
+        <span class="dx-spinner dx-spinner-lg"></span>
+        <span class="dx-text-sm dx-text-muted">Large（32px）</span>
+      </div>
+      <div class="catalog-code">&lt;span class="dx-spinner"&gt;&lt;/span&gt;
+&lt;span class="dx-spinner dx-spinner-lg"&gt;&lt;/span&gt;</div>
+    </section>
+
+    <!-- ============================================
+         9. トースト通知（インタラクティブデモ）
+         ============================================ -->
+    <section class="catalog-section">
+      <h2 class="catalog-section-title">9. トースト通知（Toast）— クリックして確認</h2>
+
+      <div class="catalog-demo catalog-row">
+        <button class="dx-btn dx-btn-secondary" onclick="DataX.toast.success('保存しました。')">
+          ✓ Success
+        </button>
+        <button class="dx-btn dx-btn-secondary" onclick="DataX.toast.error('エラーが発生しました。')">
+          ✕ Error
+        </button>
+        <button class="dx-btn dx-btn-secondary" onclick="DataX.toast.info('データを読み込んでいます...')">
+          ℹ Info
+        </button>
+        <button class="dx-btn dx-btn-secondary" onclick="DataX.toast.warning('入力内容をご確認ください。')">
+          ⚠ Warning
+        </button>
+      </div>
+      <div class="catalog-code">// 4秒後に自動消去
+DataX.toast.success('保存しました。');
+DataX.toast.error('エラーが発生しました。');
+DataX.toast.info('データを読み込んでいます...');
+DataX.toast.warning('入力内容をご確認ください。');
+
+// 表示時間を指定する（ms、0 = 自動消去しない）
+DataX.toast.success('完了！', 8000);</div>
+    </section>
+
+    <!-- ============================================
+         10. モーダル（インタラクティブデモ）
+         ============================================ -->
+    <section class="catalog-section">
+      <h2 class="catalog-section-title">10. モーダル（Modal）— クリックして確認</h2>
+
+      <div class="catalog-demo catalog-row">
+        <button class="dx-btn dx-btn-primary" onclick="openBasicModal()">基本モーダルを開く</button>
+        <button class="dx-btn dx-btn-danger" onclick="openConfirmModal()">確認ダイアログ</button>
+      </div>
+      <div class="catalog-code">// 基本モーダル
+DataX.modal.open({
+  title: 'モーダルタイトル',
+  body: '&lt;p&gt;モーダルの内容です。&lt;/p&gt;',
+  buttons: [
+    { label: 'キャンセル', class: 'dx-btn dx-btn-secondary', action: 'cancel' },
+    { label: '確認', class: 'dx-btn dx-btn-primary', action: 'ok',
+      onClick: (close) => { doSomething(); close(); }
+    }
+  ]
+});
+
+// 確認ダイアログ（Promise形式）
+const ok = await DataX.modal.confirm('本当に削除しますか？', '削除確認');
+if (ok) {
+  await deleteItem();
+  DataX.toast.success('削除しました。');
+}</div>
+    </section>
+
+    <!-- ============================================
+         11. DataXDB
+         ============================================ -->
+    <section class="catalog-section">
+      <h2 class="catalog-section-title">11. DataXDB — データベースSDK</h2>
+
+      <div class="catalog-demo">
+        <div class="dx-alert dx-alert-info" style="margin-bottom:16px">
+          ℹ localhost → <strong>localStorage</strong> を自動使用 / 本番環境 → <strong>DynamoDB</strong> へ自動切替。コード修正不要。
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div>
+            <div class="catalog-label">初期化</div>
+            <div class="catalog-code">const db = new DataXDB();
+const todos = db.collection('todos');</div>
+          </div>
+          <div>
+            <div class="catalog-label">Create</div>
+            <div class="catalog-code">const id = await todos.add({
+  text: 'タスクを完了する',
+  done: false
+});</div>
+          </div>
+          <div>
+            <div class="catalog-label">Read</div>
+            <div class="catalog-code">// 全件取得
+const all = await todos.get();
+// フィルタ取得
+const done = await todos.get({ done: true });
+// 1件取得
+const item = await todos.doc(id).get();</div>
+          </div>
+          <div>
+            <div class="catalog-label">Update / Delete</div>
+            <div class="catalog-code">await todos.doc(id).update({ done: true });
+await todos.doc(id).delete();</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         12. ヘッダー / レイアウト
+         ============================================ -->
+    <section class="catalog-section">
+      <h2 class="catalog-section-title">12. ヘッダー / レイアウト</h2>
+
+      <div class="catalog-demo" style="padding:0;overflow:hidden;border-radius:var(--dx-radius-lg)">
+        <header class="dx-header" style="position:relative">
+          <a class="dx-header-brand" href="#">アプリ名</a>
+          <nav class="dx-header-nav">
+            <button class="dx-btn dx-btn-ghost dx-btn-sm">メニュー</button>
+            <button class="dx-btn dx-btn-primary dx-btn-sm">ログイン</button>
+          </nav>
+        </header>
+        <div style="padding:16px;font-size:13px;color:var(--dx-text-muted)">← ヘッダープレビュー（上部にsticky固定）</div>
+      </div>
+      <div class="catalog-code">&lt;header class="dx-header"&gt;
+  &lt;a class="dx-header-brand" href="/"&gt;アプリ名&lt;/a&gt;
+  &lt;nav class="dx-header-nav"&gt;
+    &lt;button class="dx-btn dx-btn-ghost dx-btn-sm" data-dx-theme-toggle&gt;🌙&lt;/button&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;
+
+&lt;!-- コンテナ --&gt;
+&lt;main class="dx-container"&gt;...&lt;/main&gt;      &lt;!-- max-width: 1200px --&gt;
+&lt;main class="dx-container-sm"&gt;...&lt;/main&gt;   &lt;!-- max-width: 640px  --&gt;</div>
+    </section>
+
+    <!-- ============================================
+         13. ユーティリティクラス
+         ============================================ -->
+    <section class="catalog-section">
+      <h2 class="catalog-section-title">13. ユーティリティクラス</h2>
+
+      <div class="catalog-demo">
+        <div class="dx-table-wrap">
+          <table class="dx-table">
+            <thead>
+              <tr><th>クラス</th><th>効果</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>dx-text-sm</code></td><td>font-size: 12px</td></tr>
+              <tr><td><code>dx-text-muted</code></td><td>color: var(--dx-text-muted)</td></tr>
+              <tr><td><code>dx-text-secondary</code></td><td>color: var(--dx-text-secondary)</td></tr>
+              <tr><td><code>dx-text-center</code></td><td>text-align: center</td></tr>
+              <tr><td><code>dx-flex</code></td><td>display: flex</td></tr>
+              <tr><td><code>dx-items-center</code></td><td>align-items: center</td></tr>
+              <tr><td><code>dx-justify-between</code></td><td>justify-content: space-between</td></tr>
+              <tr><td><code>dx-gap-2</code></td><td>gap: 8px</td></tr>
+              <tr><td><code>dx-gap-4</code></td><td>gap: 16px</td></tr>
+              <tr><td><code>dx-p-4</code></td><td>padding: 16px</td></tr>
+              <tr><td><code>dx-p-6</code></td><td>padding: 24px</td></tr>
+              <tr><td><code>dx-mt-4</code></td><td>margin-top: 16px</td></tr>
+              <tr><td><code>dx-mb-4</code></td><td>margin-bottom: 16px</td></tr>
+              <tr><td><code>dx-w-full</code></td><td>width: 100%</td></tr>
+              <tr><td><code>dx-hidden</code></td><td>display: none</td></tr>
+              <tr><td><code>dx-divider</code></td><td>区切り線（border-top）</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         14. アプリHTMLテンプレート（コピーして使用）
+         ============================================ -->
+    <section class="catalog-section">
+      <h2 class="catalog-section-title">14. アプリHTMLテンプレート（コピーして使用）</h2>
+
+      <div class="catalog-code">&lt;!DOCTYPE html&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;アプリ名&lt;/title&gt;
+  &lt;link rel="stylesheet" href="/ui-kit/datax-ui.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header class="dx-header"&gt;
+    &lt;a class="dx-header-brand" href="/"&gt;アプリ名&lt;/a&gt;
+    &lt;nav class="dx-header-nav"&gt;
+      &lt;button class="dx-btn dx-btn-ghost dx-btn-sm" data-dx-theme-toggle&gt;🌙&lt;/button&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main class="dx-container" style="padding: 32px 24px"&gt;
+    &lt;h1 style="font-size:24px;font-weight:700;margin-bottom:24px"&gt;ページタイトル&lt;/h1&gt;
+    &lt;!-- コンテンツをここに入れる --&gt;
+  &lt;/main&gt;
+
+  &lt;script src="/ui-kit/datax-db.js"&gt;&lt;/script&gt;
+  &lt;script src="/ui-kit/datax-ui.js"&gt;&lt;/script&gt;
+  &lt;script&gt;
+    // アプリのJavaScriptをここに書く
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</div>
+    </section>
+
+    <!-- ============================================
+         15. 禁止事項（AI注意）
+         ============================================ -->
+    <section class="catalog-section">
+      <h2 class="catalog-section-title">15. ❌ 禁止事項（AI注意）</h2>
+
+      <div class="dx-alert dx-alert-warning" style="margin-bottom:16px">
+        ⚠ 以下のパターンを使用すると、ダーク/ライトモードが崩れたり、アプリ間のデザイン一貫性が失われます。
+      </div>
+
+      <div class="catalog-code">❌ インラインスタイルで色・ボタンを直接指定する
+&lt;button style="background:blue;color:white;padding:8px 16px"&gt;NG&lt;/button&gt;
+
+❌ 独自CSSクラスでdx-スタイルを上書きする
+&lt;style&gt;.my-button { background: red; }&lt;/style&gt;
+
+❌ CSS変数を直接上書きする
+&lt;style&gt;:root { --dx-bg: pink; }&lt;/style&gt;
+
+✅ 正しい方法：dx-クラスを使用する
+&lt;button class="dx-btn dx-btn-primary"&gt;OK&lt;/button&gt;
+
+✅ カスタムデザインが必要な場合：dx-変数を参照する
+&lt;style&gt;
+  .my-component {
+    background: var(--dx-bg-secondary);
+    border: 1px solid var(--dx-border);
+    border-radius: var(--dx-radius);
+  }
+&lt;/style&gt;</div>
+    </section>
+
+  </main>
+
+  <script src="datax-ui.js"></script>
+  <script>
+    function openBasicModal() {
+      DataX.modal.open({
+        title: '基本モーダル',
+        body: '<p style="margin:0">モーダルの本文コンテンツです。<br>ボタンを押すか、ESCキーまたはオーバーレイのクリックで閉じられます。</p>',
+        buttons: [
+          { label: 'キャンセル', class: 'dx-btn dx-btn-secondary', action: 'cancel' },
+          {
+            label: '確認', class: 'dx-btn dx-btn-primary', action: 'ok',
+            onClick: (close) => {
+              close();
+              DataX.toast.success('確認ボタンが押されました！');
+            }
+          }
+        ]
+      });
+    }
+
+    async function openConfirmModal() {
+      const ok = await DataX.modal.confirm('このアイテムを本当に削除しますか？', '削除の確認');
+      if (ok) {
+        DataX.toast.success('削除しました。');
+      } else {
+        DataX.toast.info('キャンセルしました。');
+      }
+    }
+  </script>
+</body>
+</html>

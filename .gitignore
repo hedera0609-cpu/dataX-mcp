@@ -1,0 +1,34 @@
+# 環境変数・認証情報（AWS認証情報を含む）
+.env
+.env.local
+.env.*.local
+
+# ローカルMCP設定（AWS認証情報を含むため除外）
+claude_mcp_config.json
+
+# 依存パッケージ
+node_modules/
+**/node_modules/
+
+# TypeScript ビルド成果物
+dist/
+**/dist/
+*.js.map
+
+# CDK
+infra/cdk.out/
+infra/*.d.ts
+infra/dist/
+
+# ログ
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# エディタ
+.vscode/
+.idea/
+*.swp

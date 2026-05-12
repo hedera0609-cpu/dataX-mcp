@@ -1,0 +1,19 @@
+{
+  "name": "datax-mcp",
+  "version": "1.0.0",
+  "description": "DataX Sandbox MCP Platform",
+  "private": true,
+  "workspaces": [
+    "packages/mcp-server",
+    "infra"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "build:server": "npm run build --workspace=packages/mcp-server",
+    "build:infra": "npm run build --workspace=infra",
+    "start": "npm run start --workspace=packages/mcp-server",
+    "infra:diff": "npm run diff --workspace=infra",
+    "infra:deploy": "npm run deploy --workspace=infra",
+    "infra:destroy": "npm run destroy --workspace=infra"
+  }
+}
