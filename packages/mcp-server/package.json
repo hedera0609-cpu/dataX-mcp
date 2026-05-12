@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
+    "start:local": "node dist/local/index.js",
     "dev": "ts-node src/index.ts",
+    "dev:local": "ts-node src/local/index.ts",
     "watch": "tsc --watch"
   },
   "dependencies": {

@@ -5,6 +5,17 @@
 
 ---
 
+## モード選択
+
+| モード | AWS不要 | 社内共有 | 必要なもの |
+|--------|---------|---------|-----------|
+| **ローカルモード** | ✅ | ❌（自分のPCのみ） | Docker Desktop |
+| **AWSモード** | ❌ | ✅ | AWSアカウント + 認証情報 |
+
+**ローカルモードは手順5のclaude_mcp_config.jsonの設定が異なります。** それ以外は共通です。
+
+---
+
 ## 除外されているファイル一覧
 
 | ファイル | 理由 | 対応 |
@@ -136,6 +147,29 @@ TASK_ROLE_ARN=arn:aws:iam::338246863726:role/datax-task-role
 > ⚠️ `args` の中のパスは **自分のPC上のフルパス** に書き換えること。  
 > 例（Mac）: `/Users/yourname/dataX-mcp/packages/mcp-server/dist/index.js`  
 > 例（Windows）: `C:/Users/yourname/dataX-mcp/packages/mcp-server/dist/index.js`
+
+---
+
+### 5-B. ローカルモードの場合の claude_mcp_config.json
+
+AWSを使わず自分のPCだけで動かす場合はこちら。**AWS認証情報は一切不要。**
+
+```json
+{
+  "mcpServers": {
+    "datax": {
+      "command": "node",
+      "args": ["/your/path/to/dataX-mcp/packages/mcp-server/dist/local/index.js"],
+      "env": {
+        "DATAX_NICKNAME": "yourname"
+      }
+    }
+  }
+}
+```
+
+> アプリは `http://localhost:18100〜18199` でアクセスできます。  
+> Docker Desktop が起動していることを確認してください。
 
 ---
 

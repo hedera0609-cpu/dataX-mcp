@@ -26,8 +26,9 @@ export class EcsStack extends cdk.Stack {
   public readonly cluster: ecs.Cluster;
   public readonly alb: elbv2.ApplicationLoadBalancer;
   public readonly httpsListener: elbv2.ApplicationListener;
-  public readonly taskExecutionRole: iam.Role;
-  public readonly taskRole: iam.Role;
+  // IRole を使用: 新規作成（個人）と既存参照（会社）の両方に対応
+  public readonly taskExecutionRole: iam.IRole;
+  public readonly taskRole: iam.IRole;
 
   constructor(scope: Construct, id: string, props: EcsStackProps) {
     super(scope, id, props);
@@ -95,48 +96,65 @@ export class EcsStack extends cdk.Stack {
     }
 
     // =====================================
-    // IAM: タスク実行ロール
-    // ECSがECRからイメージPullするために必要
+    // IAM ロールの設定
+    // 環境変数 TASK_EXECUTION_ROLE_ARN が設定されている場合:
+    //   → 既存ロールを参照（会社アカウント用: IAMロール作成権限不要）
+    // 設定されていない場合:
+    //   → 新規ロールを作成（個人アカウント用）
     // =====================================
 
-    this.taskExecutionRole = new iam.Role(this, "TaskExecutionRole", {
-      roleName: "datax-task-execution-role",
-      assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
-      managedPolicies: [
-        iam.ManagedPolicy.fromAwsManagedPolicyName(
-          "service-role/AmazonECSTaskExecutionRolePolicy"
-        ),
-      ],
-    });
+    const existingExecutionRoleArn = process.env.TASK_EXECUTION_ROLE_ARN;
+    const existingTaskRoleArn = process.env.TASK_ROLE_ARN;
 
-    // CloudWatch Logsへの書き込み権限を追加する
-    this.taskExecutionRole.addToPolicy(
-      new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
-        actions: [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents",
+    if (existingExecutionRoleArn && existingTaskRoleArn) {
+      // 会社アカウント用: インフラチームが作成済みのロールを参照する
+      console.log("IAMロールモード: 既存ロールを参照します（会社アカウント）");
+      this.taskExecutionRole = iam.Role.fromRoleArn(
+        this,
+        "TaskExecutionRole",
+        existingExecutionRoleArn,
+        { mutable: false }
+      );
+      this.taskRole = iam.Role.fromRoleArn(
+        this,
+        "TaskRole",
+        existingTaskRoleArn,
+        { mutable: false }
+      );
+    } else {
+      // 個人アカウント用: IAMロールを新規作成する
+      console.log("IAMロールモード: 新規ロールを作成します（個人アカウント）");
+
+      // タスク実行ロール: ECSがECRからイメージをPullするために必要
+      const executionRole = new iam.Role(this, "TaskExecutionRole", {
+        roleName: "datax-task-execution-role",
+        assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
+        managedPolicies: [
+          iam.ManagedPolicy.fromAwsManagedPolicyName(
+            "service-role/AmazonECSTaskExecutionRolePolicy"
+          ),
         ],
-        resources: ["*"],
-      })
-    );
+      });
+      // CloudWatch Logsへの書き込み権限を追加する
+      executionRole.addToPolicy(
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"],
+          resources: ["*"],
+        })
+      );
+      this.taskExecutionRole = executionRole;
 
-    // =====================================
-    // IAM: タスクロール
-    // アプリコンテナがAWSサービスにアクセスするために必要
-    // =====================================
-
-    this.taskRole = new iam.Role(this, "TaskRole", {
-      roleName: "datax-task-role",
-      assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
-    });
-
-    // S3バケットへの読み書き権限（アプリがS3を使う場合）
-    props.sourceBucket.grantReadWrite(this.taskRole);
-
-    // DynamoDBテーブルへの読み書き権限（SandboxDB SDKが使用）
-    props.appsTable.grantReadWriteData(this.taskRole);
+      // タスクロール: アプリコンテナがS3・DynamoDBにアクセスするために必要
+      const taskRole = new iam.Role(this, "TaskRole", {
+        roleName: "datax-task-role",
+        assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
+      });
+      // S3・DynamoDBへの読み書き権限を付与する
+      props.sourceBucket.grantReadWrite(taskRole);
+      props.appsTable.grantReadWriteData(taskRole);
+      this.taskRole = taskRole;
+    }
 
     // =====================================
     // ALBアクセスログ用S3バケット
