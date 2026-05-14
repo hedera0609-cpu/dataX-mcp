@@ -10,13 +10,15 @@ claude_mcp_config.json
 node_modules/
 **/node_modules/
 
-# TypeScript ビルド成果物（mcp-serverのdistは含める）
+# TypeScript ビルド成果物
+dist/
+**/dist/
 *.js.map
-infra/dist/
 
 # CDK
 infra/cdk.out/
 infra/*.d.ts
+infra/dist/
 
 # ログ
 *.log
