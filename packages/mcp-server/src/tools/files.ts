@@ -9,7 +9,7 @@ import {
   readFileContent,
   listFiles,
 } from "../deploy/s3-storage.js";
-import { APP_NAME_REGEX, sanitizePath } from "../constants.js";
+import { APP_NAME_REGEX, sanitizePath, scanForSecrets } from "../constants.js";
 
 // =====================================
 // datax_write_file ツール定義
@@ -36,9 +36,27 @@ export type WriteFileInput = z.infer<typeof writeFileSchema> & {
 
 /**
  * datax_write_file ツールのハンドラ
+ * 書き込み前にシークレットスキャンを実施し、機密情報が含まれる場合は拒否する
  */
 export async function handleWriteFile(input: WriteFileInput): Promise<string> {
   const safePath = sanitizePath(input.file_path);
+
+  // シークレットスキャン（P1セキュリティ対策）
+  const scanResult = scanForSecrets(safePath, input.content);
+  if (scanResult.detected) {
+    const details = scanResult.findings
+      .map((f) => `  - ${f.label}（${f.line}行目）`)
+      .join("\n");
+    return JSON.stringify({
+      success: false,
+      reason: "SECRET_DETECTED",
+      message:
+        `セキュリティポリシー違反のため書き込みを拒否しました。\n` +
+        `ファイル "${safePath}" に機密情報が含まれています:\n${details}\n\n` +
+        `APIキーやパスワードはコードに直接書かず、環境変数として管理してください。`,
+      findings: scanResult.findings,
+    });
+  }
 
   await writeFile(
     input.nickname,

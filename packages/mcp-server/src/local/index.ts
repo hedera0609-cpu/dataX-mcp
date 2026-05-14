@@ -36,7 +36,7 @@ import {
 import {
   generateDockerfile, DEFAULT_REQUIREMENTS_TXT,
 } from "../deploy/dockerfile-generator.js";
-import { APP_NAME_REGEX, sanitizePath } from "../constants.js";
+import { APP_NAME_REGEX, sanitizePath, scanForSecrets } from "../constants.js";
 
 // =====================================
 // 起動時バリデーション
@@ -294,6 +294,29 @@ server.registerTool(
   },
   async (args: any) => {
     const safePath = sanitizePath(args.file_path);
+
+    // シークレットスキャン（P1セキュリティ対策）
+    const scanResult = scanForSecrets(safePath, args.content);
+    if (scanResult.detected) {
+      const details = scanResult.findings
+        .map((f: any) => `  - ${f.label}（${f.line}行目）`)
+        .join("\n");
+      return {
+        content: [{
+          type: "text" as const,
+          text: JSON.stringify({
+            success: false,
+            reason: "SECRET_DETECTED",
+            message:
+              `セキュリティポリシー違反のため書き込みを拒否しました。\n` +
+              `ファイル "${safePath}" に機密情報が含まれています:\n${details}\n\n` +
+              `APIキーやパスワードはコードに直接書かず、環境変数として管理してください。`,
+            findings: scanResult.findings,
+          }),
+        }],
+      };
+    }
+
     writeFile(NICKNAME, args.app_name, safePath, args.content, args.mode);
     return {
       content: [{

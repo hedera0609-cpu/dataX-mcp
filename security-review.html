@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataX MCP — セキュリティレビュー資料</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      background: linear-gradient(135deg, #1a1f2e 0%, #0f1117 100%);
+      border-bottom: 1px solid #2d3748;
+      padding: 40px 60px;
+    }
+    .header-tag {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #4299e1;
+      margin-bottom: 12px;
+    }
+    .header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .header-meta {
+      font-size: 14px;
+      color: #718096;
+    }
+
+    /* ===== LAYOUT ===== */
+    .container { max-width: 1100px; margin: 0 auto; padding: 48px 60px; }
+
+    /* ===== SECTION ===== */
+    .section { margin-bottom: 56px; }
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #4299e1;
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #2d3748;
+    }
+
+    /* ===== CARD ===== */
+    .card {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin-bottom: 16px;
+    }
+    .card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 12px;
+    }
+    .card p, .card li {
+      font-size: 14px;
+      color: #a0aec0;
+      line-height: 1.8;
+    }
+    .card ul { padding-left: 20px; }
+    .card li { margin-bottom: 4px; }
+
+    /* ===== ARCH DIAGRAM ===== */
+    .arch {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+    }
+    .arch-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+    .arch-node {
+      background: #2d3748;
+      border: 1px solid #4a5568;
+      border-radius: 10px;
+      padding: 14px 20px;
+      min-width: 120px;
+      text-align: center;
+    }
+    .arch-node .label {
+      font-size: 11px;
+      color: #718096;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .arch-node .name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+    .arch-node.highlight {
+      background: #1a365d;
+      border-color: #4299e1;
+    }
+    .arch-node.highlight .name { color: #63b3ed; }
+    .arch-node.danger {
+      background: #2d1a1a;
+      border-color: #fc8181;
+    }
+    .arch-node.danger .name { color: #fc8181; }
+    .arch-arrow {
+      font-size: 20px;
+      color: #4a5568;
+      padding: 0 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .arch-arrow .arrow-label {
+      font-size: 10px;
+      color: #4a5568;
+      white-space: nowrap;
+    }
+
+    /* ===== TABLE ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th {
+      text-align: left;
+      padding: 12px 16px;
+      background: #2d3748;
+      color: #a0aec0;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    th:first-child { border-radius: 8px 0 0 0; }
+    th:last-child { border-radius: 0 8px 0 0; }
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #2d3748;
+      color: #a0aec0;
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #1e2535; }
+
+    /* ===== BADGES ===== */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-green  { background: #1a2e22; color: #68d391; border: 1px solid #276749; }
+    .badge-red    { background: #2d1a1a; color: #fc8181; border: 1px solid #c53030; }
+    .badge-yellow { background: #2d2a1a; color: #f6e05e; border: 1px solid #975a16; }
+    .badge-blue   { background: #1a2a3d; color: #63b3ed; border: 1px solid #2b6cb0; }
+    .badge::before { font-size: 10px; }
+    .badge-green::before  { content: "●"; }
+    .badge-red::before    { content: "●"; }
+    .badge-yellow::before { content: "●"; }
+    .badge-blue::before   { content: "●"; }
+
+    /* ===== RISK CARDS ===== */
+    .risk-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .risk-card {
+      background: #1a1f2e;
+      border-radius: 12px;
+      padding: 24px;
+      border-left: 4px solid;
+    }
+    .risk-card.critical { border-color: #fc8181; }
+    .risk-card.high     { border-color: #f6ad55; }
+    .risk-card.medium   { border-color: #f6e05e; }
+    .risk-card.low      { border-color: #68d391; }
+    .risk-level {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .risk-card.critical .risk-level { color: #fc8181; }
+    .risk-card.high     .risk-level { color: #f6ad55; }
+    .risk-card.medium   .risk-level { color: #f6e05e; }
+    .risk-card.low      .risk-level { color: #68d391; }
+    .risk-card h4 { font-size: 15px; color: #e2e8f0; margin-bottom: 8px; }
+    .risk-card p  { font-size: 13px; color: #718096; line-height: 1.7; }
+
+    /* ===== ROADMAP ===== */
+    .roadmap-item {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .roadmap-item:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      left: 19px;
+      top: 40px;
+      bottom: -24px;
+      width: 2px;
+      background: #2d3748;
+    }
+    .roadmap-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .p1 { background: #2d1a1a; color: #fc8181; border: 2px solid #fc8181; }
+    .p2 { background: #2d2318; color: #f6ad55; border: 2px solid #f6ad55; }
+    .p3 { background: #2d2a18; color: #f6e05e; border: 2px solid #f6e05e; }
+    .p4 { background: #1a2d1a; color: #68d391; border: 2px solid #68d391; }
+    .roadmap-content { flex: 1; padding-top: 8px; }
+    .roadmap-content h4 { font-size: 15px; color: #e2e8f0; margin-bottom: 6px; }
+    .roadmap-content p  { font-size: 13px; color: #718096; line-height: 1.7; }
+    .roadmap-status {
+      margin-top: 8px;
+    }
+
+    /* ===== CODE BLOCK ===== */
+    .code-block {
+      background: #0d1117;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: "Fira Code", "Consolas", monospace;
+      font-size: 13px;
+      color: #a0aec0;
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+    .code-block .c { color: #4a5568; }
+    .code-block .s { color: #68d391; }
+    .code-block .k { color: #63b3ed; }
+    .code-block .n { color: #f6ad55; }
+
+    /* ===== QUOTE ===== */
+    .quote {
+      background: #1a2a3d;
+      border-left: 4px solid #4299e1;
+      border-radius: 0 8px 8px 0;
+      padding: 20px 24px;
+      font-size: 15px;
+      color: #bee3f8;
+      font-style: italic;
+      line-height: 1.8;
+    }
+
+    /* ===== DIVIDER ===== */
+    .divider { border: none; border-top: 1px solid #2d3748; margin: 40px 0; }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      border-top: 1px solid #2d3748;
+      padding: 24px 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #4a5568;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-tag">Security Review</div>
+  <h1>DataX MCP — セキュリティレビュー資料</h1>
+  <div class="header-meta">2026년 5월 15일 &nbsp;|&nbsp; 보안 관리자 검토용 &nbsp;|&nbsp; Confidential</div>
+</div>
+
+<div class="container">
+
+  <!-- ===== 1. 개요 ===== -->
+  <div class="section">
+    <div class="section-title">01 &nbsp; 시스템 개요</div>
+
+    <div class="card" style="margin-bottom:24px;">
+      <h3>DataX MCP란</h3>
+      <p>비기술자(개발 지식이 없는 사용자)가 Claude AI를 통해 안전하게 웹 애플리케이션을 개발·배포할 수 있도록 설계된 플랫폼입니다.<br><br>
+      핵심 설계 목표는 <strong style="color:#63b3ed;">사용자가 보안 규칙을 몰라도, 시스템이 자동으로 위반을 방지</strong>하는 것입니다.</p>
+    </div>
+
+    <div class="arch">
+      <div class="arch-flow">
+        <div class="arch-node">
+          <div class="label">User</div>
+          <div class="name">비기술자</div>
+        </div>
+        <div class="arch-arrow">
+          <span>→</span>
+          <span class="arrow-label">자연어 지시</span>
+        </div>
+        <div class="arch-node highlight">
+          <div class="label">AI Agent</div>
+          <div class="name">Claude Code</div>
+        </div>
+        <div class="arch-arrow">
+          <span>→</span>
+          <span class="arrow-label">MCP 도구 호출</span>
+        </div>
+        <div class="arch-node highlight">
+          <div class="label">Security Layer</div>
+          <div class="name">MCP Server</div>
+        </div>
+        <div class="arch-arrow">
+          <span>→</span>
+          <span class="arrow-label">검증 후 실행</span>
+        </div>
+        <div class="arch-node">
+          <div class="label">AWS</div>
+          <div class="name">S3 / ECS / DynamoDB</div>
+        </div>
+      </div>
+      <p style="font-size:13px; color:#4a5568; margin-top:24px;">MCP 서버가 AI와 AWS 사이의 보안 게이트웨이 역할을 수행</p>
+    </div>
+  </div>
+
+  <!-- ===== 2. 실제 강제되는 보안 ===== -->
+  <div class="section">
+    <div class="section-title">02 &nbsp; 현재 실제로 강제되는 보안 항목</div>
+
+    <table style="background:#1a1f2e; border-radius:12px; overflow:hidden;">
+      <thead>
+        <tr>
+          <th>항목</th>
+          <th>구현 위치</th>
+          <th>강제 방식</th>
+          <th>상태</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color:#e2e8f0; font-weight:500;">사용자 격리 (본인 앱만 접근)</td>
+          <td>DynamoDB PK 구조</td>
+          <td><code style="font-size:12px; color:#63b3ed;">USER#{nickname}</code> 키로 쿼리 자체 격리</td>
+          <td><span class="badge badge-green">강제</span></td>
+        </tr>
+        <tr>
+          <td style="color:#e2e8f0; font-weight:500;">닉네임 고정 (위장 불가)</td>
+          <td>MCP Server 환경변수</td>
+          <td>서버 기동 시 환경변수에서만 주입. 사용자·AI 변경 불가</td>
+          <td><span class="badge badge-green">강제</span></td>
+        </tr>
+        <tr>
+          <td style="color:#e2e8f0; font-weight:500;">경로 트래버설 차단</td>
+          <td>constants.ts sanitizePath()</td>
+          <td><code style="font-size:12px; color:#63b3ed;">..</code> <code style="font-size:12px; color:#63b3ed;">//</code> <code style="font-size:12px; color:#63b3ed;">\</code> 절대경로 전부 차단</td>
+          <td><span class="badge badge-green">강제</span></td>
+        </tr>
+        <tr>
+          <td style="color:#e2e8f0; font-weight:500;">입력값 형식 검증</td>
+          <td>zod 스키마</td>
+          <td>앱 이름 정규식, 필드 타입 전수 검증</td>
+          <td><span class="badge badge-green">강제</span></td>
+        </tr>
+        <tr>
+          <td style="color:#e2e8f0; font-weight:500;">API키 평문 금지</td>
+          <td>CLAUDE.md</td>
+          <td>AI가 룰을 따를 때만 유효. 기술적 강제 없음</td>
+          <td><span class="badge badge-yellow">소프트</span></td>
+        </tr>
+        <tr>
+          <td style="color:#e2e8f0; font-weight:500;">파일 내용 시크릿 스캔</td>
+          <td>—</td>
+          <td>현재 미구현</td>
+          <td><span class="badge badge-red">미구현</span></td>
+        </tr>
+        <tr>
+          <td style="color:#e2e8f0; font-weight:500;">감사 로그</td>
+          <td>—</td>
+          <td>현재 미구현</td>
+          <td><span class="badge badge-red">미구현</span></td>
+        </tr>
+        <tr>
+          <td style="color:#e2e8f0; font-weight:500;">관리자 전체 조회·강제 삭제</td>
+          <td>—</td>
+          <td>현재 미구현</td>
+          <td><span class="badge badge-red">미구현</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== 3. 리스크 평가 ===== -->
+  <div class="section">
+    <div class="section-title">03 &nbsp; 현재 리스크 평가 (솔직한 평가)</div>
+
+    <div class="risk-grid">
+      <div class="risk-card critical">
+        <div class="risk-level">Critical</div>
+        <h4>파일 내용 무검증 배포</h4>
+        <p>비기술자가 Claude에게 "API키를 출력하는 앱을 만들어줘"라고 하면, <code style="color:#fc8181;">datax_write_file</code>이 내용을 검사하지 않고 S3에 저장 → 인터넷에 배포됩니다.</p>
+      </div>
+      <div class="risk-card high">
+        <div class="risk-level">High</div>
+        <h4>감사 로그 부재</h4>
+        <p>누가 언제 무엇을 배포했는지 추적이 불가능합니다. 사고 발생 시 원인 규명이 어렵고 컴플라이언스 요건을 충족하지 못합니다.</p>
+      </div>
+      <div class="risk-card high">
+        <div class="risk-level">High</div>
+        <h4>관리자 기능 부재</h4>
+        <p>보안 관리자가 전체 배포 현황을 볼 수 없고, 문제 앱을 강제 삭제할 수단이 없습니다. 현재 <code style="color:#fc8181;">datax_list</code>는 본인 앱만 반환합니다.</p>
+      </div>
+      <div class="risk-card medium">
+        <div class="risk-level">Medium</div>
+        <h4>컨테이너 네트워크 egress 무제한</h4>
+        <p>배포된 ECS 컨테이너가 외부 서버로 데이터를 전송하거나 내부 네트워크를 스캔하는 코드를 포함해도 막을 수 없습니다.</p>
+      </div>
+      <div class="risk-card medium">
+        <div class="risk-level">Medium</div>
+        <h4>AWS 키 평문 저장</h4>
+        <p><code style="color:#f6e05e;">~/.claude/settings.json</code>에 AWS 인증정보가 평문으로 저장됩니다. MCP 설정 방식의 구조적 한계이며, PC 탈취 시 키 노출 위험이 있습니다.</p>
+      </div>
+      <div class="risk-card low">
+        <div class="risk-level">Low</div>
+        <h4>ALB HTTP 통신</h4>
+        <p>현재 검증 단계로 HTTPS 미적용입니다. 도메인 연결 시 ACM 인증서 + HTTPS 전환이 필요합니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 4. 개선 로드맵 ===== -->
+  <div class="section">
+    <div class="section-title">04 &nbsp; 개선 로드맵</div>
+
+    <div class="roadmap-item">
+      <div class="roadmap-dot p1">P1</div>
+      <div class="roadmap-content">
+        <h4>파일 업로드 시 시크릿 스캔 <span style="margin-left:8px;" class="badge badge-blue">진행중</span></h4>
+        <p><code>datax_write_file</code> 단계에서 파일 내용에 AWS 키, API 키, 패스워드 패턴이 탐지되면 <strong style="color:#e2e8f0;">저장 자체를 차단</strong>합니다. CLAUDE.md 소프트 룰을 하드 룰로 격상.</p>
+        <div class="code-block">
+<span class="c">// 탐지 패턴 예시</span>
+<span class="k">AKIA</span>[0-9A-Z]{16}            <span class="c">// AWS Access Key</span>
+<span class="k">-----BEGIN.*PRIVATE KEY-----</span> <span class="c">// 개인키</span>
+<span class="n">password</span>\s*=\s*['"][^'"]{8,}  <span class="c">// 패스워드 하드코딩</span>
+<span class="n">api_key</span>\s*=\s*['"][^'"]{8,}   <span class="c">// API 키</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="roadmap-item">
+      <div class="roadmap-dot p2">P2</div>
+      <div class="roadmap-content">
+        <h4>관리자 도구 추가</h4>
+        <p>환경변수 <code>DATAX_ADMIN_NICKNAME</code>을 지정한 관리자 계정에 한해 전체 앱 조회 및 강제 삭제 권한 부여.</p>
+        <div class="code-block">
+<span class="n">datax_admin_list</span>   <span class="c">// 전체 사용자 앱 조회</span>
+<span class="n">datax_admin_delete</span> <span class="c">// 강제 삭제</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="roadmap-item">
+      <div class="roadmap-dot p3">P3</div>
+      <div class="roadmap-content">
+        <h4>감사 로그 (Audit Log)</h4>
+        <p>모든 배포·삭제·파일 업로드 작업을 CloudWatch Logs 또는 DynamoDB 별도 테이블에 기록. 사용자, 타임스탬프, 작업 내용, 결과를 포함.</p>
+      </div>
+    </div>
+
+    <div class="roadmap-item">
+      <div class="roadmap-dot p4">P4</div>
+      <div class="roadmap-content">
+        <h4>네트워크 egress 제한</h4>
+        <p>ECS Security Group 아웃바운드 규칙을 강화하여 컨테이너가 허용된 엔드포인트 외부로 통신하는 것을 차단.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 5. 리뷰 포인트 Q&A ===== -->
+  <div class="section">
+    <div class="section-title">05 &nbsp; 예상 질문 & 답변</div>
+
+    <div class="card" style="margin-bottom:12px;">
+      <h3 style="color:#63b3ed; font-size:14px; margin-bottom:8px;">Q. 비기술자가 민감정보를 포함한 코드를 배포하면?</h3>
+      <p>현재: P1 구현 전에는 막을 수 없음. <br>
+      P1 완료 후: <code>datax_write_file</code> 단계에서 패턴 탐지 시 저장 자체가 차단되고, 사용자에게 환경변수 사용을 안내.</p>
+    </div>
+
+    <div class="card" style="margin-bottom:12px;">
+      <h3 style="color:#63b3ed; font-size:14px; margin-bottom:8px;">Q. AWS 키가 settings.json에 평문인 이유는?</h3>
+      <p>Claude Code MCP 설정 방식의 구조적 한계. 현재는 파일 시스템 권한으로만 보호. 향후 AWS IAM Role 기반 인증 또는 SSO로 전환 예정.</p>
+    </div>
+
+    <div class="card" style="margin-bottom:12px;">
+      <h3 style="color:#63b3ed; font-size:14px; margin-bottom:8px;">Q. 사용자 A가 사용자 B의 앱을 삭제할 수 있나?</h3>
+      <p>불가능. DynamoDB PK가 <code>USER#{nickname}</code>으로 구성되어 쿼리 자체가 본인 데이터만 반환. 닉네임은 서버 환경변수에서 고정 주입되어 변조 불가.</p>
+    </div>
+
+    <div class="card" style="margin-bottom:12px;">
+      <h3 style="color:#63b3ed; font-size:14px; margin-bottom:8px;">Q. 배포된 컨테이너에서 내부 네트워크 스캔이 가능한가?</h3>
+      <p>현재는 egress 제한이 없어 이론적으로 가능. P4 로드맵에서 Security Group 강화로 대응 예정.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="color:#63b3ed; font-size:14px; margin-bottom:8px;">Q. 감사 추적(Audit Trail)은?</h3>
+      <p>현재 DynamoDB에 배포 상태와 타임스탬프만 보관. 체계적인 감사 로그는 P3 로드맵. 즉각 조치가 필요하다면 DynamoDB Streams + CloudWatch 연동으로 단기 구현 가능.</p>
+    </div>
+  </div>
+
+  <!-- ===== 6. 결론 ===== -->
+  <div class="section">
+    <div class="section-title">06 &nbsp; 리뷰 시작 시 오프닝 멘트</div>
+    <div class="quote">
+      "이 시스템은 개발 지식이 없는 사용자가 Claude AI를 통해 앱을 배포할 수 있도록 설계되었습니다.<br><br>
+      핵심 보안 원칙은 세 가지입니다. 첫째, 사용자 인증정보는 서버 환경변수에 고정되어 AI를 포함한 누구도 변조할 수 없습니다. 둘째, 모든 입력값은 스키마 검증과 경로 트래버설 차단으로 2중 방어합니다. 셋째, AWS 리소스는 VPC 내부에 격리되고 ALB를 통해서만 외부에 노출됩니다.<br><br>
+      다만 파일 내용 스캔, 감사 로그, 관리자 기능은 현재 미흡하며, 오늘 리뷰에서 우선순위를 함께 정하고 싶습니다."
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>DataX MCP Security Review — 2026.05.15</span>
+  <span>Confidential / Internal Use Only</span>
+</div>
+
+</body>
+</html>
