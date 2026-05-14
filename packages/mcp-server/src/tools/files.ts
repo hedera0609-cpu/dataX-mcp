@@ -9,22 +9,7 @@ import {
   readFileContent,
   listFiles,
 } from "../deploy/s3-storage.js";
-
-// パストラバーサル攻撃を防ぐためのパスサニタイズ
-function sanitizePath(filePath: string): string {
-  if (
-    filePath.includes("..") ||
-    filePath.includes("//") ||
-    filePath.startsWith("/") ||
-    filePath.includes("\\")
-  ) {
-    throw new Error(
-      `許可されていないパスです: ${filePath}` +
-        " (.., //, 先頭/, バックスラッシュは使用不可)"
-    );
-  }
-  return filePath;
-}
+import { APP_NAME_REGEX, sanitizePath } from "../constants.js";
 
 // =====================================
 // datax_write_file ツール定義
@@ -33,10 +18,7 @@ function sanitizePath(filePath: string): string {
 export const writeFileSchema = z.object({
   app_name: z
     .string()
-    .regex(
-      /^[a-z0-9][a-z0-9-]{0,30}[a-z0-9]$/,
-      "app_nameは英小文字・数字・ハイフンのみ使用可能です（先頭末尾は英数字）"
-    ),
+    .regex(APP_NAME_REGEX, "app_nameは英小文字・数字・ハイフンのみ使用可能です（先頭末尾は英数字）"),
   file_path: z
     .string()
     .min(1)
@@ -80,10 +62,7 @@ export async function handleWriteFile(input: WriteFileInput): Promise<string> {
 // =====================================
 
 export const readFileSchema = z.object({
-  app_name: z
-    .string()
-    .regex(/^[a-z0-9][a-z0-9-]{0,30}[a-z0-9]$/)
-    .describe("対象アプリ名"),
+  app_name: z.string().regex(APP_NAME_REGEX).describe("対象アプリ名"),
   file_path: z.string().min(1).describe("読み込むファイルパス"),
 });
 
@@ -124,10 +103,7 @@ export async function handleReadFile(input: ReadFileInput): Promise<string> {
 // =====================================
 
 export const listFilesSchema = z.object({
-  app_name: z
-    .string()
-    .regex(/^[a-z0-9][a-z0-9-]{0,30}[a-z0-9]$/)
-    .describe("対象アプリ名"),
+  app_name: z.string().regex(APP_NAME_REGEX).describe("対象アプリ名"),
 });
 
 export type ListFilesInput = z.infer<typeof listFilesSchema> & {

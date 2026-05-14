@@ -10,7 +10,6 @@ import {
   ListObjectsV2Command,
   DeleteObjectsCommand,
 } from "@aws-sdk/client-s3";
-import { Readable } from "stream";
 
 // S3 バケット名（環境変数から取得）
 const BUCKET_NAME = process.env.S3_BUCKET ?? "datax-app-sources";
@@ -82,20 +81,10 @@ export async function readFileContent(
     if (!result.Body) return null;
 
     // ストリームを文字列に変換
-    const chunks: Buffer[] = [];
-    for await (const chunk of result.Body as Readable) {
-      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
-    }
-    return Buffer.concat(chunks).toString("utf-8");
-  } catch (err: unknown) {
+    return await (result.Body as any).transformToString("utf-8");
+  } catch (err: any) {
     // ファイルが存在しない場合はnullを返す
-    if (
-      err instanceof Error &&
-      "name" in err &&
-      (err as { name: string }).name === "NoSuchKey"
-    ) {
-      return null;
-    }
+    if (err?.name === "NoSuchKey") return null;
     throw err;
   }
 }

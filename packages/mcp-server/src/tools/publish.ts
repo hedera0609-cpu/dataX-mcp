@@ -4,6 +4,7 @@
  */
 
 import { z } from "zod";
+import { APP_NAME_REGEX } from "../constants.js";
 import * as os from "os";
 import * as path from "path";
 import * as fs from "fs";
@@ -31,9 +32,6 @@ import {
   updateAppStatus,
   getApp,
 } from "../db/client.js";
-
-// アプリ名の正規表現バリデーション
-const APP_NAME_REGEX = /^[a-z0-9][a-z0-9-]{0,30}[a-z0-9]$/;
 
 // =====================================
 // datax_publish ツール入力スキーマ

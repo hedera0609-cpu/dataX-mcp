@@ -10,7 +10,6 @@ import {
   GetCommand,
   QueryCommand,
   UpdateCommand,
-  DeleteCommand,
 } from "@aws-sdk/lib-dynamodb";
 
 // DynamoDB テーブル名（環境変数から取得）

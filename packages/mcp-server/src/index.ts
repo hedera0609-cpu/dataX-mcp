@@ -58,94 +58,30 @@ const server = new McpServer({
 // → AIや利用者がnicknameを操作できない構造
 // =====================================
 
-server.registerTool(
-  "datax_publish",
-  {
-    description: "アプリをECS Fargateにデプロイする",
-    inputSchema: publishSchema.shape,
-  },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async (args: any) => {
-    const result = await handlePublish({ ...args, nickname: NICKNAME });
-    return { content: [{ type: "text" as const, text: result }] };
-  }
-);
+/** nicknameを自動注入してツールを登録するヘルパー */
+function reg(
+  name: string,
+  description: string,
+  inputSchema: Record<string, any>,
+  handler: (args: any) => Promise<string>
+) {
+  server.registerTool(name, { description, inputSchema }, async (args: any) => ({
+    content: [{ type: "text" as const, text: await handler({ ...args, nickname: NICKNAME }) }],
+  }));
+}
 
-server.registerTool(
-  "datax_deploy_status",
-  {
-    description: "デプロイ状況を確認する（ポーリング方式）",
-    inputSchema: deployStatusSchema.shape,
-  },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async (args: any) => {
-    const result = await handleDeployStatus({ ...args, nickname: NICKNAME });
-    return { content: [{ type: "text" as const, text: result }] };
-  }
-);
+reg("datax_publish",      "アプリをECS Fargateにデプロイする",        publishSchema.shape,      handlePublish);
+reg("datax_deploy_status","デプロイ状況を確認する（ポーリング方式）",  deployStatusSchema.shape, handleDeployStatus);
+reg("datax_write_file",   "S3にファイルを書き込む",                    writeFileSchema.shape,    handleWriteFile);
+reg("datax_read_file",    "S3からファイルを読み込む",                   readFileSchema.shape,     handleReadFile);
+reg("datax_list_files",   "S3上のファイル一覧を取得する",              listFilesSchema.shape,    handleListFiles);
+reg("datax_delete",       "アプリを削除する（自分のアプリのみ）",      deleteSchema.shape,       handleDelete);
 
-server.registerTool(
-  "datax_write_file",
-  {
-    description: "S3にファイルを書き込む",
-    inputSchema: writeFileSchema.shape,
-  },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async (args: any) => {
-    const result = await handleWriteFile({ ...args, nickname: NICKNAME });
-    return { content: [{ type: "text" as const, text: result }] };
-  }
-);
-
-server.registerTool(
-  "datax_read_file",
-  {
-    description: "S3からファイルを読み込む",
-    inputSchema: readFileSchema.shape,
-  },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async (args: any) => {
-    const result = await handleReadFile({ ...args, nickname: NICKNAME });
-    return { content: [{ type: "text" as const, text: result }] };
-  }
-);
-
-server.registerTool(
-  "datax_list_files",
-  {
-    description: "S3上のファイル一覧を取得する",
-    inputSchema: listFilesSchema.shape,
-  },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async (args: any) => {
-    const result = await handleListFiles({ ...args, nickname: NICKNAME });
-    return { content: [{ type: "text" as const, text: result }] };
-  }
-);
-
+// datax_list は引数なし（nicknameのみ注入）
 server.registerTool(
   "datax_list",
-  {
-    description: "自分のデプロイ済みアプリ一覧を取得する",
-    inputSchema: listSchema.shape,
-  },
-  async (_args: any) => {
-    const result = await handleList({ nickname: NICKNAME });
-    return { content: [{ type: "text" as const, text: result }] };
-  }
-);
-
-server.registerTool(
-  "datax_delete",
-  {
-    description: "アプリを削除する（自分のアプリのみ）",
-    inputSchema: deleteSchema.shape,
-  },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async (args: any) => {
-    const result = await handleDelete({ ...args, nickname: NICKNAME });
-    return { content: [{ type: "text" as const, text: result }] };
-  }
+  { description: "自分のデプロイ済みアプリ一覧を取得する", inputSchema: listSchema.shape },
+  async () => ({ content: [{ type: "text" as const, text: await handleList({ nickname: NICKNAME }) }] })
 );
 
 // =====================================

@@ -6,6 +6,7 @@
 import { z } from "zod";
 import { getApp } from "../db/client.js";
 import { getServiceStatus } from "../deploy/ecs-deployer.js";
+import { APP_NAME_REGEX } from "../constants.js";
 
 // =====================================
 // datax_deploy_status ツール入力スキーマ
@@ -14,7 +15,7 @@ import { getServiceStatus } from "../deploy/ecs-deployer.js";
 export const deployStatusSchema = z.object({
   app_name: z
     .string()
-    .regex(/^[a-z0-9][a-z0-9-]{0,30}[a-z0-9]$/)
+    .regex(APP_NAME_REGEX)
     .describe(
       `デプロイ状況を確認するアプリ名。
 

@@ -8,6 +8,7 @@ import { z } from "zod";
 import { getApp, softDeleteApp } from "../db/client.js";
 import { deleteApp } from "../deploy/ecs-deployer.js";
 import { deleteAppFiles } from "../deploy/s3-storage.js";
+import { APP_NAME_REGEX } from "../constants.js";
 
 // =====================================
 // datax_delete ツール入力スキーマ
@@ -16,7 +17,7 @@ import { deleteAppFiles } from "../deploy/s3-storage.js";
 export const deleteSchema = z.object({
   app_name: z
     .string()
-    .regex(/^[a-z0-9][a-z0-9-]{0,30}[a-z0-9]$/)
+    .regex(APP_NAME_REGEX)
     .describe(
       `削除するアプリ名。
 
@@ -55,14 +56,6 @@ export async function handleDelete(input: DeleteInput): Promise<string> {
     return JSON.stringify({
       success: false,
       message: `アプリ "${app_name}" は既に削除済みです。`,
-    });
-  }
-
-  // オーナー検証（PK がUSER#{nickname}と一致することでDB側で保証されているが、追加チェック）
-  if (app.nickname !== nickname) {
-    return JSON.stringify({
-      success: false,
-      message: "他のユーザーのアプリは削除できません。",
     });
   }
 

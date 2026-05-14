@@ -36,6 +36,7 @@ import {
 import {
   generateDockerfile, DEFAULT_REQUIREMENTS_TXT,
 } from "../deploy/dockerfile-generator.js";
+import { APP_NAME_REGEX, sanitizePath } from "../constants.js";
 
 // =====================================
 // 起動時バリデーション
@@ -70,21 +71,6 @@ const server = new McpServer({
   name: "datax-local",
   version: "1.0.0",
 });
-
-const APP_NAME_REGEX = /^[a-z0-9][a-z0-9-]{0,30}[a-z0-9]$/;
-
-// パストラバーサル攻撃を防ぐサニタイズ
-function sanitizePath(filePath: string): string {
-  if (
-    filePath.includes("..") ||
-    filePath.includes("//") ||
-    filePath.startsWith("/") ||
-    filePath.includes("\\")
-  ) {
-    throw new Error(`許可されていないパスです: ${filePath}`);
-  }
-  return filePath;
-}
 
 // =====================================
 // datax_publish — ローカルDockerにデプロイ
